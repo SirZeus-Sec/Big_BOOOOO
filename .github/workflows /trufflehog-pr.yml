@@ -1,0 +1,25 @@
+name: TruffleHog Secret Scan
+
+on:
+  pull_request:
+    branches:
+      - main  # Change this if needed
+
+jobs:
+  trufflehog_scan:
+    name: Scan PR for Secrets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Ensures we get previous commit for diff
+
+      - name: Run TruffleHog on PR Diff
+        uses: trufflesecurity/trufflehog@v3
+        with:
+          path: ./
+          base: "${{ github.event.repository.default_branch }}"
+          head: HEAD
+          extra_args: --debug --only-verified
